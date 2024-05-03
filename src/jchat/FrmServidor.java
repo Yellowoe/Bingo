@@ -18,12 +18,15 @@ public class FrmServidor extends javax.swing.JFrame {
 
     Vector nb = new Vector(75);
     boolean continuar = true;
+    public static String modoJuegoSeleccionado;
 
     /**
      * Creates new form FrmServidor
      */
     public FrmServidor() {
         initComponents();
+        modoJuegoComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Cartón lleno", "4 esquinas","L" }));
+
     }
 
     /**
@@ -41,6 +44,7 @@ public class FrmServidor extends javax.swing.JFrame {
         tbBingo = new javax.swing.JTable();
         btnTerinar = new javax.swing.JButton();
         btnContinuar = new javax.swing.JButton();
+        modoJuegoComboBox = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -114,11 +118,18 @@ public class FrmServidor extends javax.swing.JFrame {
             }
         });
 
+        modoJuegoComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        modoJuegoComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                modoJuegoComboBoxActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(59, 59, 59)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -130,8 +141,10 @@ public class FrmServidor extends javax.swing.JFrame {
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(btnTerinar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnContinuar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 454, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(111, 111, 111)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 454, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(modoJuegoComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -139,15 +152,17 @@ public class FrmServidor extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(35, 35, 35)
                 .addComponent(btnIniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(79, 79, 79)
                 .addComponent(lblNumero, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnTerinar, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnContinuar, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(modoJuegoComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 379, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -160,7 +175,7 @@ public class FrmServidor extends javax.swing.JFrame {
         if (!nb.contains(nr) && nr > 0) {
             nb.add(nr);
             try {
-
+                    Servidor.marcarNumero(nr);
                 if (continuar) {
                     broadcast(String.valueOf(nr));
                     System.out.println(nr);
@@ -202,6 +217,10 @@ public class FrmServidor extends javax.swing.JFrame {
     private void btnContinuarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContinuarActionPerformed
         continuar = true;
     }//GEN-LAST:event_btnContinuarActionPerformed
+
+    private void modoJuegoComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modoJuegoComboBoxActionPerformed
+        modoJuegoSeleccionado = (String) modoJuegoComboBox.getSelectedItem();
+    }//GEN-LAST:event_modoJuegoComboBoxActionPerformed
     public void broadcast(String mensaje) {
         synchronized (Servidor.usuarios) {
             Enumeration e = Servidor.usuarios.elements();
@@ -219,6 +238,7 @@ public class FrmServidor extends javax.swing.JFrame {
             }
         }
     }
+    
 
     /**
      * @param args the command line arguments
@@ -253,6 +273,7 @@ public class FrmServidor extends javax.swing.JFrame {
                 new FrmServidor().setVisible(true);
             }
         });
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -261,6 +282,7 @@ public class FrmServidor extends javax.swing.JFrame {
     private javax.swing.JButton btnTerinar;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblNumero;
+    private javax.swing.JComboBox<String> modoJuegoComboBox;
     private javax.swing.JTable tbBingo;
     // End of variables declaration//GEN-END:variables
 }

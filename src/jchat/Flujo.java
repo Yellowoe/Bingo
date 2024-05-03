@@ -9,11 +9,14 @@ package jchat;
  * @author pablonoguera
  */
 import claseshijas.Estudiante;
+import java.awt.Color;
 import java.net.*;
 import java.io.*;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import static jchat.Servidor.numerosMarcados;
 
 public class Flujo extends Thread {
 
@@ -44,22 +47,21 @@ public class Flujo extends Thread {
         while (true) {
             try {
                 String linea = FlujoLectura.readUTF();
-                if (!linea.equals("")) {
-                    linea = nombre + "> " + linea;
-                    broadcast(linea);
-                }
-
-                if (linea.contains("carton")) {
-                    sendCarton(this.nombre);
-                }
-
-                if (isNumeric(linea)) {
-                   boolean finalizar = comprobarCartones(Integer.parseInt(linea));
+                if (linea.equals("BINGO")) {
+                    boolean finalizar = comprobarBingo();
                     if (finalizar) {
                         terminarBingo();
                     }
-                }
+                } else {
+                    if (!linea.equals("")) {
+                        linea = nombre + "> " + linea;
+                        broadcast(linea);
+                    }
 
+                    if (linea.contains("carton")) {
+                        sendCarton(this.nombre);
+                    }
+                }
             } catch (IOException ioe) {
                 Servidor.usuarios.removeElement(this);
                 broadcast(nombre + "> se ha desconectado");
@@ -135,28 +137,106 @@ public class Flujo extends Thread {
 
     }
 
-    private boolean comprobarCartones(int num) {
+// Función para verificar si todas las esquinas están marcadas
+    private boolean verificarCuatroEsquinas(int[][] matrix) {
+        return numerosMarcados.contains(matrix[0][0])
+                && numerosMarcados.contains(matrix[0][4])
+                && numerosMarcados.contains(matrix[4][0])
+                && numerosMarcados.contains(matrix[4][4]);
+    }
+
+// Función para verificar si los números en forma de L están marcados
+    private boolean verificarL(int[][] matrix) {
+        return numerosMarcados.contains(matrix[0][0])
+                && numerosMarcados.contains(matrix[1][0])
+                && numerosMarcados.contains(matrix[2][0])
+                && numerosMarcados.contains(matrix[3][0])
+                && numerosMarcados.contains(matrix[4][0])
+                && numerosMarcados.contains(matrix[4][1])
+                && numerosMarcados.contains(matrix[4][2])
+                && numerosMarcados.contains(matrix[4][3])
+                && numerosMarcados.contains(matrix[4][4]);
+    }
+
+// Función para verificar si todos los números del cartón han sido marcados
+    private boolean verificarCartonCompleto(int[][] matrix) {
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                if (i != 2 || j != 2 && !numerosMarcados.contains(matrix[i][j])) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+
+    private boolean comprobarCartones(String modoJuego, int[][] matrix) {
+        if (modoJuego != null) {
+            if (modoJuego.equals("4 esquinas")) {
+                return verificarCuatroEsquinas(matrix);
+            } else if (modoJuego.equals("L")) {
+                return verificarL(matrix);
+            }
+        }
+        return verificarCartonCompleto(matrix);
+    }
+
+    private boolean comprobarBingo() {
         synchronized (Servidor.usuarios) {
             Enumeration e = Servidor.usuarios.elements();
             while (e.hasMoreElements()) {
                 Usuario user = (Usuario) e.nextElement();
                 Flujo f = (Flujo) user.getFlujo();
-                int [][] matrix = user.getCarton();
-                
-                try {
-                    synchronized (f.FlujoEscritura) {
-                        f.FlujoEscritura.writeUTF("Comprabando cartones");
-                        f.FlujoEscritura.flush();
+                int[][] matrix = user.getCarton();
+
+                String modoJuego = FrmServidor.modoJuegoSeleccionado;
+
+                boolean bingo = comprobarCartones(modoJuego, matrix);
+
+                if (bingo) {
+                    try {
+                        synchronized (f.FlujoEscritura) {
+                            f.FlujoEscritura.writeUTF("BINGO! Has ganado.");
+                            f.FlujoEscritura.flush();
+                            terminarBingo();
+                            
+                           
+                        }
+                    } catch (IOException ioe) {
+                        System.out.println("Error: " + ioe);
                     }
-                } catch (IOException ioe) {
-                    System.out.println("Error: " + ioe);
+                } else {
+                    try {
+                        synchronized (f.FlujoEscritura) {
+                            f.FlujoEscritura.writeUTF("No mienta, siga jugando.");
+                            f.FlujoEscritura.flush();
+                        }
+                    } catch (IOException ioe) {
+                        System.out.println("Error: " + ioe);
+                    }
                 }
             }
         }
         return false;
     }
 
-    private void terminarBingo() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+   private void terminarBingo() {
+    synchronized (Servidor.usuarios) {
+        Enumeration e = Servidor.usuarios.elements();
+        while (e.hasMoreElements()) {
+            Usuario user = (Usuario) e.nextElement();
+            Flujo f = (Flujo) user.getFlujo();
+            try {
+                synchronized (f.FlujoEscritura) {
+                    f.FlujoEscritura.writeUTF("El juego ha terminado. ¡Gracias por jugar!");
+                    f.FlujoEscritura.flush();
+                }
+            } catch (IOException ioe) {
+                System.out.println("Error: " + ioe);
+            }
+        }
     }
+}
+
 }

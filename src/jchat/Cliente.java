@@ -51,7 +51,8 @@ public class Cliente extends Frame implements ActionListener {
             SalidaSocket.writeUTF(entradaTexto.nextLine());
             SalidaSocket.flush();
             new Cliente();
-
+            VentanaCliente VC = new VentanaCliente();
+            VC.setVisible(true);
         } catch (UnknownHostException uhe) {
             System.out.println("No se puede acceder al servidor.");
             System.exit(1);

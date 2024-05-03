@@ -41,11 +41,15 @@
               <Group type="102" alignment="0" attributes="0">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
-                          <Component id="jScrollPane1" pref="287" max="32767" attributes="0"/>
+                          <Component id="jScrollPane1" pref="299" max="32767" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="jScrollPane3" min="-2" pref="216" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="txtIngreso" min="-2" pref="409" max="-2" attributes="0"/>
+                      <Group type="102" attributes="0">
+                          <Component id="txtIngreso" min="-2" pref="409" max="-2" attributes="0"/>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Component id="bingo" max="32767" attributes="0"/>
+                      </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
@@ -73,6 +77,7 @@
                       <Component id="txtIngreso" alignment="3" min="-2" pref="35" max="-2" attributes="0"/>
                       <Component id="btnEnviar" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="bingo" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
           </Group>
@@ -100,6 +105,7 @@
         </Container>
         <Component class="javax.swing.JTextField" name="txtIngreso">
           <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtIngresoActionPerformed"/>
             <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtIngresoKeyPressed"/>
           </Events>
         </Component>
@@ -197,6 +203,14 @@
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="bingo">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="BINGO"/>
+          </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="bingoMouseClicked"/>
           </Events>
         </Component>
       </SubComponents>

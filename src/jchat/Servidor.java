@@ -18,6 +18,8 @@ import claseshijas.Estudiante;
 public class Servidor extends Thread {
 
     public static Vector<Usuario> usuarios = new Vector();
+    public static ArrayList<Integer> numerosMarcados = new ArrayList<>(); // Lista para almacenar numero que ya salieron
+    
 
     ArrayList carton = new ArrayList<>();
 
@@ -171,6 +173,13 @@ public class Servidor extends Thread {
         }
 
         return b;
+    }
+    
+    
+     public static void marcarNumero(int numero) {
+        synchronized (numerosMarcados) {
+            numerosMarcados.add(numero);
+        }
     }
 
 }

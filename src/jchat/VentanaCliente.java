@@ -66,6 +66,7 @@ public class VentanaCliente extends javax.swing.JFrame {
         listaUsuarios = new javax.swing.JList<>();
         btnEnviar = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
+        bingo = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -74,6 +75,11 @@ public class VentanaCliente extends javax.swing.JFrame {
         jtextAreaMensajes.setRows(5);
         jScrollPane1.setViewportView(jtextAreaMensajes);
 
+        txtIngreso.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtIngresoActionPerformed(evt);
+            }
+        });
         txtIngreso.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtIngresoKeyPressed(evt);
@@ -129,6 +135,13 @@ public class VentanaCliente extends javax.swing.JFrame {
             }
         });
 
+        bingo.setText("BINGO");
+        bingo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                bingoMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -136,10 +149,13 @@ public class VentanaCliente extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(txtIngreso, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(txtIngreso, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(bingo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -160,7 +176,8 @@ public class VentanaCliente extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtIngreso, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnEnviar)
-                    .addComponent(jButton1)))
+                    .addComponent(jButton1)
+                    .addComponent(bingo)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -205,25 +222,37 @@ public class VentanaCliente extends javax.swing.JFrame {
         try {
             SalidaSocket.writeUTF("carton");
             SalidaSocket.flush();
-           
         } catch (IOException ioe) {
             System.out.println("Error: " + ioe);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void txtIngresoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIngresoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtIngresoActionPerformed
+
+    private void bingoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bingoMouseClicked
+    try {
+            SalidaSocket.writeUTF("BINGO");
+            SalidaSocket.flush();
+        } catch (IOException ioe) {
+            System.out.println("Error: " + ioe);
+        }
+    }//GEN-LAST:event_bingoMouseClicked
+
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new VentanaCliente().setVisible(true);
             }
         });
-        String nameInput = JOptionPane.showInputDialog("ingrese su nombre");
-
-        //tablero.setModel(tableModel);
+        String nameInput = JOptionPane.showInputDialog("Ingrese su nombre");
+        //String modalInput = JOptionPane.showInputDialog("Elija la modalidad del juego: 0) Ninguna, 1) Cuatro esquinas, 2) L, 3) Linea inferior, 4) Linea superior, 5) Carton lleno");
+        
+        tablero.setModel(tableModel);
         try {
             sfd = new Socket("localhost", 8000);
 
@@ -232,6 +261,8 @@ public class VentanaCliente extends javax.swing.JFrame {
 
             SalidaSocket.writeUTF(nameInput);
             SalidaSocket.flush();
+            //SalidaSocket.writeUTF(modalInput);
+            //SalidaSocket.flush();
 
         } catch (UnknownHostException uhe) {
             System.out.println("No se puede acceder al servidor.");
@@ -246,7 +277,6 @@ public class VentanaCliente extends javax.swing.JFrame {
                 
 
                 if (linea.contains("carton")) {
-
                     //  carton:5,28,43,47,71,:6,29,36,59,68,:1,26,34,57,70,:9,21,30,54,73,:13,18,44,53,67,:
                     String[] filas = linea.split(":");
                     for (int i = 1; i < filas.length; i++) {
@@ -257,7 +287,7 @@ public class VentanaCliente extends javax.swing.JFrame {
                             numeros.add(nums[j]);
                         }
                        
-                        // System.out.println(nums[i]);
+                        //System.out.println(nums[i]);
                     }
 
                 }else{
@@ -335,6 +365,7 @@ public class VentanaCliente extends javax.swing.JFrame {
 }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bingo;
     private javax.swing.JButton btnEnviar;
     private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel1;
